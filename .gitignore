@@ -1,0 +1,4 @@
+certs
+.idea
+__pycache__
+.env

@@ -1,0 +1,68 @@
+version: "3.9"
+name: "simpleo"
+
+services:
+  backend:
+    container_name: "simpleo-backend"
+    build: .
+    command: uvicorn simpleo.app:app --host 0.0.0.0 --port 8000 --reload
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ".:/backend"
+    depends_on:
+      edgedb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  edgedb:
+    container_name: "simpleo-database"
+    image: edgedb/edgedb
+    restart: always
+    environment:
+      EDGEDB_SERVER_SECURITY: insecure_dev_mode
+      EDGEDB_SERVER_ADMIN_UI: enabled
+      EDGEDB_SERVER_TLS_CERT_FILE: /certs/edgedb.crt
+      EDGEDB_SERVER_TLS_KEY_FILE: /certs/edgedb.key
+    env_file:
+      - .env
+    volumes:
+      - ./dbschema:/dbschema
+      - ./certs:/certs
+      - simpleo-db:/var/lib/edgedb/data
+    ports:
+      - "5656:5656"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5656/server/status/ready"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+
+  redis:
+    container_name: "simpleo-redis"
+    restart: always
+    image: redis:alpine
+    command: redis-server
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+      - redis-conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 15s
+      timeout: 20s
+      retries: 5
+
+volumes:
+  simpleo-db:
+  redis-data:
+  redis-conf:

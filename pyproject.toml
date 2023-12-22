@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "simpleo"
+version = "1.0.0"
+description = "Simpleo - simple news portal"
+authors = ["Kirill Nikolaevskiy <happykust@list.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.103.1"
+pyseto = "^1.7.4"
+pydantic-settings = "^2.0.3"
+redis = "^5.0.0"
+edgedb = "^1.6.0"
+email-validator = "^2.0.0.post2"
+uvicorn = "^0.23.2"
+aiohttp = "^3.8.5"
+python-dateutil = "^2.8.2"
+python-multipart = "^0.0.6"
+passlib = "^1.7.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
