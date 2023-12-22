@@ -34,14 +34,9 @@ async def get_news_filter(
     """
     Get news with filtering
     """
-    if news := await NewsTDG().get(
+    return await NewsTDG().get(
         user_id=user_id,
         title=title
-    ):
-        return news
-    raise HTTPException(
-        status_code=500,
-        detail="Internal server error."
     )
 
 

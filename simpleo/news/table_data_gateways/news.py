@@ -35,7 +35,7 @@ class NewsTDG(BaseTableDataGateway):
 
         try:
             return await self.database.query(query, user_id=user_id, title=title)
-        except edgedb.errors.EdgeDBError:
+        except edgedb.errors.EdgeDBError as e:
             return None
 
     async def get_by_uuid(self, news_id: UUID) -> News | None:
